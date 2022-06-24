@@ -26,7 +26,12 @@ const postCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-  .then(removedCard => res.send({ data: removedCard }))
+  .then(removedCard => {
+    if (!removedCard) {
+      return res.status(404).send({ message: 'Карточка не найдена' })
+    }
+    res.send({ data: removedCard })
+  })
   .catch((err) => {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Введены некорректные данные' });
