@@ -29,7 +29,7 @@ const deleteCard = (req, res) => {
   .then(removedCard => res.send({ data: removedCard }))
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(404).send({ message: 'Карточка не найдена' });
+      res.status(400).send({ message: 'Введены некорректные данные' });
     } else {
       res.status(500).send({message: 'Что-то пошло не так'});
     }
@@ -49,7 +49,7 @@ const likeCard = (req, res) => {
     res.send({ data: updatedCard })
   })
   .catch((err) => {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'CastError') {
       res.status(400).send({ message: 'Введены некорректные данные' });
     } else {
       res.status(500).send({ message: 'Не удалось поставить лайк' });
@@ -69,7 +69,7 @@ const dislikeCard = (req, res) => {
     res.send({ data: updatedCard })
   })
   .catch((err) => {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'CastError') {
       res.status(400).send({ message: 'Введены некорректные данные' });
     } else {
       res.status(500).send({ message: 'Не удалось снять лайк' });
