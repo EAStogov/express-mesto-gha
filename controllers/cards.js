@@ -10,7 +10,11 @@ const postCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-  .then(newCard => res.send({ data: newCard}))
+  .then(newCard => {
+    const {name, link, owner, likes} = newCard;
+    res.send({ data: {name, link, owner, likes}}
+    )
+})
   .catch((err) => {
     if (err.name === 'ValidationError') {
       res.status(400).send({ message: 'Введены некорректные данные' });
