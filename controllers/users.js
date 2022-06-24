@@ -13,6 +13,9 @@ const getUser = (req, res) => {
     if (!user) {
       return res.status(404).send({ message: 'Пользователь не найден' })
     }
+    if (!userId) {
+      return res.status(400).send({ message: 'Введены некорректные данные' })
+    }
     return res.send({data: user});
   })
   .catch((err) => {
