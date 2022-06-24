@@ -4,6 +4,7 @@ const { getUsers, getUser, createUser, updateUserProfile, updateUserAvatar } = r
 
 router.get('/users', getUsers);
 
+//router.get('/users/:userId', getUser);
 router.get('/users/:userId', getUser);
 
 router.post('/users', createUser);
