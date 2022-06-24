@@ -11,11 +11,17 @@ const getUser = (req, res) => {
   User.findById(userId)
   .then(user => {
     if (!user) {
-      return res.status(400).send({ message: 'Пользователь не найден' })
+      return res.status(404).send({ message: 'Пользователь не найден' })
     }
     return res.send({data: user});
   })
-  .catch((_) => res.status(500).send({ message: 'Что-то пошло не так' }))
+  .catch((err) => {
+    if (err.name === 'ValidationError') {
+      res.status(400).send({ message: 'Введены некорректные данные' });
+    } else {
+      res.status(500).send({ message: 'Что-то пошло не так' })
+    }
+  })
 };
 
 const createUser = (req, res) => {
