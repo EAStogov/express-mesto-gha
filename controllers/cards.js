@@ -11,8 +11,8 @@ const postCard = (req, res) => {
   const owner = req.user._id;
   Card.create({ name, link, owner })
   .then(newCard => {
-    const {name, link, owner, likes} = newCard;
-    res.send({ data: {name, link, owner, likes}}
+    const {name, link, owner, likes, _id} = newCard;
+    res.send({ data: {name, link, owner, likes, _id}}
     )
 })
   .catch((err) => {
