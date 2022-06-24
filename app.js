@@ -21,7 +21,7 @@ app.use((req, _res, next) => {
 });
 app.use('', userRouter);
 app.use('', cardRouter);
-app.patch('*', (_req, res) => {
+app.use('*', (_req, res) => {
   return res.status(404).send({ message: 'Страница не найдена' })
 });
 
