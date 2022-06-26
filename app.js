@@ -18,13 +18,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, _res, next) => {
-  req.user = {
-    _id: '62b4a23d553c410c9aeb3a68',
-  };
-
-  next();
-});
 app.post('/signin', login);
 app.post('/signup', createUser);
 
