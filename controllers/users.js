@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const User = require('../models/user');
 
 const getUsers = (_req, res) => {
@@ -25,16 +28,22 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((newUser) => res.send({ data: newUser }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
-      } else {
-        res.status(500).send({ message: 'Что-то пошло не так' });
-      }
-    });
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({
+      email: req.body.email,
+      password: hash,
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+    })
+      .then((newUser) => res.send({ data: newUser }))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(400).send({ message: 'Введены некорректные данные' });
+        } else {
+          res.status(500).send({ message: 'Что-то пошло не так' });
+        }
+      }));
 };
 
 const updateUserProfile = (req, res) => {
@@ -85,6 +94,21 @@ const updateUserAvatar = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+      const token = jwt.sign({ _id: user._id }, 'sol', { expiresIn: '7d' });
+      return res.send(token);
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
 module.exports = {
-  getUsers, getUser, createUser, updateUserProfile, updateUserAvatar,
+  getUsers, getUser, createUser, updateUserProfile, updateUserAvatar, login,
 };
