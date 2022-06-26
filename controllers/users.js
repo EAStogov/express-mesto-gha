@@ -11,7 +11,9 @@ const UnknownError = require('../errors/UnknownError');
 const getUsers = (_req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(next(new UnauthorizedError('Необходимо авторизоваться')));
+    .catch(() => {
+      next(new UnauthorizedError('Необходимо авторизоваться'));
+    });
 };
 
 const getUser = (req, res, next) => {

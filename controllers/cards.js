@@ -8,7 +8,9 @@ const UnknownError = require('../errors/UnknownError');
 const getCards = (_req, res, next) => {
   Card.find()
     .then((cards) => res.send({ data: cards }))
-    .catch(next(new UnknownError('Что-то пошло не так')));
+    .catch(() => {
+      next(new UnauthorizedError('Необходимо авторизоваться'));
+    });
 };
 
 const postCard = (req, res, next) => {
