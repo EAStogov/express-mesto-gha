@@ -101,7 +101,7 @@ const login = (req, res) => {
       if (!user) {
         return Promise.reject(new Error('Неправильные почта или пароль'));
       }
-      const token = jwt.sign({ _id: user._id }, 'sol', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
       return res.send(token);
     })
     .catch((err) => {
