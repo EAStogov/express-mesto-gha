@@ -29,6 +29,7 @@ const postCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
+    // eslint-disable-next-line consistent-return
     .then((card) => {
       if (JSON.stringify(req.user._id) !== JSON.stringify(card.owner)) {
         return Promise.reject(new Error('Удалять чужие карточки нехорошо'));
