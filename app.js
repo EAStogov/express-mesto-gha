@@ -32,5 +32,8 @@ app.use('*', (_req, res) => {
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => res.send({ message: err.message }));
+
 app.listen(PORT, () => {
 });
