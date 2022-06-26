@@ -102,7 +102,11 @@ const login = (req, res) => {
         return Promise.reject(new Error('Неправильные почта или пароль'));
       }
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-      return res.send(token);
+      return res.cookie('jwt', token, {
+        maxAge: 3600000 * 24,
+        httpOnly: true,
+      })
+        .end();
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });
