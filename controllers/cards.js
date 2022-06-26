@@ -28,20 +28,27 @@ const postCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((removedCard) => {
-      if (!removedCard) {
-        return res.status(404).send({ message: 'Карточка не найдена' });
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (JSON.stringify(req.user._id) !== JSON.stringify(card.owner)) {
+        return Promise.reject(new Error('Удалять чужие карточки нехорошо'));
       }
-      return res.send({ data: removedCard });
+      Card.findOneAndRemove(card)
+        .then((removedCard) => {
+          if (!removedCard) {
+            return res.status(404).send({ message: 'Карточка не найдена' });
+          }
+          return res.send({ data: removedCard });
+        })
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            res.status(400).send({ message: 'Введены некорректные данные' });
+          } else {
+            res.status(500).send({ message: 'Что-то пошло не так' });
+          }
+        });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
-      } else {
-        res.status(500).send({ message: 'Что-то пошло не так' });
-      }
-    });
+    .catch((err) => res.status(401).send({ message: err.message }));
 };
 
 const likeCard = (req, res) => {
