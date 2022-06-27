@@ -132,7 +132,7 @@ const login = (req, res, next) => {
         throw new UnauthorizedError('Неправильные почта или пароль');
       }
 
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'd92f6c25c8bd88007924dd817ca05574', { expiresIn: '7d' });
 
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24,
