@@ -125,21 +125,23 @@ const updateUserAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
+
   User.findUserByCredentials(email, password, next)
     .then((user) => {
       if (!user) {
         next(new UnauthorizedError('Неправильные почта или пароль'));
       }
+
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24,
         httpOnly: true,
       });
+
       return res.send({ token });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports = {
