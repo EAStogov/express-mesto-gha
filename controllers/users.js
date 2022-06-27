@@ -42,7 +42,7 @@ const getMe = (req, res, next) => {
       }
       return res.send(me);
     })
-    .catch(next(new NotFoundError('Пользователь не найден')));
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
