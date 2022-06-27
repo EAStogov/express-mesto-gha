@@ -137,8 +137,8 @@ const login = (req, res, next) => {
       });
       return res.send({ token });
     })
-    .catch(() => {
-      next(new UnauthorizedError('Неправильные почта или пароль'));
+    .catch((err) => {
+      next(err);
     });
 };
 
