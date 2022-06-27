@@ -53,8 +53,6 @@ const createUser = (req, res, next) => {
         err.statusCode = 409;
         next(err);
       }
-    })
-    .then(() => {
       bcrypt.hash(req.body.password, 10)
         .then((hash) => User.create({
           email: req.body.email,
