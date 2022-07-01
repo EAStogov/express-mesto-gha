@@ -88,7 +88,7 @@ const dislikeCard = (req, res, next) => {
   )
     .then((updatedCard) => {
       if (!updatedCard) {
-        next(new NotFoundError('Карточка не найдена'));
+        return next(new NotFoundError('Карточка не найдена'));
       }
       return res.send({ data: updatedCard });
     })
