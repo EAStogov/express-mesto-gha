@@ -4,6 +4,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UnknownError = require('../errors/UnknownError');
+const Forbidden = require('../errors/Forbidden');
 
 const getCards = (_req, res, next) => {
   Card.find()
@@ -38,16 +39,14 @@ const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     // eslint-disable-next-line consistent-return
     .then((card) => {
+      if (!card) {
+        next(new NotFoundError('Такой карточки не существует'));
+      }
       if (JSON.stringify(req.user._id) !== JSON.stringify(card.owner)) {
-        next(new UnauthorizedError('Нельзя удалить чужую карточку'));
+        next(new Forbidden('Удалять чужую карточку запрещено'));
       }
       Card.findOneAndRemove(card)
-        .then((removedCard) => {
-          if (!removedCard) {
-            next(new NotFoundError('Карточка не найдена'));
-          }
-          return res.send({ data: removedCard });
-        })
+        .then((removedCard) => res.send({ data: removedCard }))
         .catch((err) => {
           if (err.name === 'CastError') {
             next(new BadRequestError('Введены некорректные данные'));
@@ -56,7 +55,7 @@ const deleteCard = (req, res, next) => {
           }
         });
     })
-    .catch(next(new UnauthorizedError('Что-то пошло не так')));
+    .catch(next);
 };
 
 const likeCard = (req, res, next) => {
