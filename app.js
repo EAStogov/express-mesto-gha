@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 const { celebrate, Joi, errors } = require('celebrate');
 
 const userRouter = require('./routes/users');
@@ -15,10 +16,16 @@ const NotFoundError = require('./errors/NotFoundError');
 const { PORT = 3000 } = process.env;
 
 const app = express();
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 50,
+});
 
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(limiter);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
