@@ -6,13 +6,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
 
-const userRouter = require('./routes/users');
-const cardRouter = require('./routes/cards');
-const auth = require('./middlewares/auth');
-const { login, createUser } = require('./controllers/users');
-const NotFoundError = require('./errors/NotFoundError');
+const appRouter = require('./routes/appRouter');
 
 const { PORT = 3000 } = process.env;
 
@@ -29,30 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(limiter);
 app.use(helmet());
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/^((https?:\/\/)|(www\.))([\w-]+)\.([a-z]{2,6})(\/[\w/]*)?/),
-  }),
-}), createUser);
-
-app.use(auth);
-
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
-
-app.use('*', () => {
-  throw new NotFoundError('Страница не найдена');
-});
+app.use('', appRouter);
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
