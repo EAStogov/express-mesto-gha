@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const { celebrate, Joi, errors } = require('celebrate');
 
 const userRouter = require('./routes/users');
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(limiter);
+app.use(helmet());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
