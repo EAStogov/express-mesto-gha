@@ -8,6 +8,8 @@ const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UnknownError = require('../errors/UnknownError');
 
+const { JWT_SECRET } = process.env;
+
 const getUsers = (_req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
@@ -132,7 +134,7 @@ const login = (req, res, next) => {
         throw new UnauthorizedError('Неправильные почта или пароль');
       }
 
-      const token = jwt.sign({ _id: user._id }, 'd92f6c25c8bd88007924dd817ca05574', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
 
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24,
